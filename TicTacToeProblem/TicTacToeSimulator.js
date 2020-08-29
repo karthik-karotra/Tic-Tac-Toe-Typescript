@@ -118,8 +118,9 @@ let computerMove = () => {
     letterAssigned = "X";
     playerMove();
 };
-function playForWinCondition(letterAssigned) {
+let playForWinCondition = (letterAssigned) => {
     let block = 0;
+    madeMoveFlag = 0;
     for (let row = 0; row < 3; row++) {
         for (let column = 0; column < 3; column++) {
             if (board[row][column] == ".") {
@@ -131,8 +132,10 @@ function playForWinCondition(letterAssigned) {
                 else if (flag == false && letterAssigned == "X") {
                     board[row][column] = "O";
                     block = 1;
+                    madeMoveFlag = 1;
                     count++;
                     flag = true;
+                    playerMove();
                     break;
                 }
                 else {
@@ -147,22 +150,30 @@ function playForWinCondition(letterAssigned) {
     else {
         madeMoveFlag = 0;
     }
-}
-function checkCorner() {
-    madeMoveFlag = 0;
+};
+let checkForCorners = () => {
     for (let row = 0; row < 3; row += 2) {
         for (let column = 0; column < 3; column += 2) {
             if (board[row][column] == '.') {
                 board[row][column] = letterAssigned;
-                displayTicTacToeBoard();
-                count++;
-                checkWin(letterAssigned);
-                displayWinOrTie(letterAssigned);
-                playerMove();
+                commonStatements();
             }
         }
     }
-}
+};
+let checkForCenter = () => {
+    if (board[Math.floor(ROWS / 2)][Math.floor(COLUMNS / 2)] == ".") {
+        board[Math.floor(ROWS / 2)][Math.floor(COLUMNS / 2)] = letterAssigned;
+        commonStatements();
+    }
+};
+let commonStatements = () => {
+    displayTicTacToeBoard();
+    count++;
+    checkWin(letterAssigned);
+    displayWinOrTie(letterAssigned);
+    playerMove();
+};
 let playersPlay = () => {
     while (count < TOTAL_PLAYS) {
         letterAssigned = "X";
@@ -184,20 +195,24 @@ let playersPlay = () => {
         break;
     }
 };
-function computersPlay() {
+let computersPlay = () => {
+    letterAssigned = "O";
     switch1 = 0;
     playForWinCondition(letterAssigned);
     playForWinCondition("X");
     if (madeMoveFlag == 0) {
-        checkCorner();
+        checkForCorners();
     }
     if (madeMoveFlag == 0) {
-        let pos = Math.floor(Math.random() * 9) + 1;
-        changeOneDimentionalPositionToTwoDimentional(pos);
+        checkForCenter();
+    }
+    if (madeMoveFlag == 0) {
+        let position = Math.floor(Math.random() * 9) + 1;
+        changeOneDimentionalPositionToTwoDimentional(position);
         setLetter(row, column, letterAssigned);
         checkWin(letterAssigned);
     }
-}
+};
 resetBoard();
 checkingPlayerAndAssignedLetterToHim();
 //# sourceMappingURL=TicTacToeSimulator.js.map

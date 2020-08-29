@@ -97,7 +97,6 @@ let checkWin = (letterAssigned) => {
             }
         }
     }
-
 }
 
 let displayWinOrTie = (letterAssigned) => {
@@ -131,6 +130,7 @@ let computerMove = () => {
 
 let playForWinCondition = (letterAssigned) => {
     let block = 0
+    madeMoveFlag = 0;
     for (let row = 0; row < 3; row++) {
         for (let column = 0; column < 3; column++) {
             if (board[row][column] == ".") {
@@ -142,9 +142,11 @@ let playForWinCondition = (letterAssigned) => {
                 }
                 else if (flag == false && letterAssigned == "X") {
                     board[row][column] = "O"
-                    block = 1
+                    block = 1;
+                    madeMoveFlag = 1;
                     count++;
                     flag = true;
+                    playerMove();
                     break;
                 }
                 else {
@@ -161,22 +163,33 @@ let playForWinCondition = (letterAssigned) => {
 }
 
 let checkForCorners = () => {
-    madeMoveFlag = 0
     for (let row = 0; row < 3; row += 2) {
         for (let column = 0; column < 3; column += 2)
         {
             if(board[row][column] == '.')
             {
                 board[row][column] = letterAssigned
-                displayTicTacToeBoard();
-                count++
-                checkWin(letterAssigned);
-                displayWinOrTie(letterAssigned);
-                playerMove();
+                commonStatements();
                 
             }
         }
     }
+}
+
+let checkForCenter = () => {
+    if (board[Math.floor(ROWS / 2)][Math.floor(COLUMNS / 2)] == ".")
+    {
+        board[Math.floor(ROWS / 2)][Math.floor(COLUMNS / 2)] = letterAssigned
+        commonStatements();
+    }
+}
+
+let commonStatements = () => {
+    displayTicTacToeBoard();
+    count++
+    checkWin(letterAssigned);
+    displayWinOrTie(letterAssigned);
+    playerMove();
 }
 
 let playersPlay = () => {
@@ -202,11 +215,15 @@ let playersPlay = () => {
 }
 
 let computersPlay = () => {
+    letterAssigned = "O";
     switch1= 0
     playForWinCondition(letterAssigned);
     playForWinCondition("X");
     if (madeMoveFlag == 0) {
         checkForCorners();
+    }
+    if (madeMoveFlag == 0) {
+        checkForCenter();
     }
     if (madeMoveFlag == 0) {
         let position = Math.floor(Math.random() * 9) + 1
