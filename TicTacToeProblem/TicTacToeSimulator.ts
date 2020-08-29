@@ -5,6 +5,7 @@ console.log('============================================');
 let board: any[][] = [];
 const ROWS = 3
 const COLUMNS = 3
+let letterAssigned;
 
 let resetBoard = () => {
     for (let i: number = 0; i < ROWS; i++) {
@@ -15,4 +16,11 @@ let resetBoard = () => {
     }
 }
 
+let assigningLetterToPlayer = () => {
+    let random = Math.floor(Math.random() * 10) % 2;
+    random === 1 ? letterAssigned = "X" : letterAssigned = "O";
+}
+
 resetBoard();
+assigningLetterToPlayer();
+console.log('Letter assigned is ' + letterAssigned);
