@@ -13,7 +13,6 @@ const TOTAL_PLAYS = ROWS * COLUMNS;
 var readlineSync = require('readline-sync');
 let row;
 let column;
-let player1;
 let flag = true;
 let switch1;
 let madeMoveFlag;
@@ -57,6 +56,7 @@ let changeOneDimentionalPositionToTwoDimentional = (position) => {
 let setLetter = (row, column, letterAssigned) => {
     if (board[row][column] == '.') {
         board[row][column] = letterAssigned;
+        displayTicTacToeBoard();
         count++;
     }
     else if (switch1 == 1) {
@@ -92,7 +92,7 @@ let checkWin = (letterAssigned) => {
         }
     }
 };
-let displayWinner = (letterAssigned) => {
+let displayWinOrTie = (letterAssigned) => {
     if (flag == false) {
         console.log(letterAssigned + ' Wins');
         displayTicTacToeBoard();
@@ -126,7 +126,7 @@ function playForWinCondition(letterAssigned) {
                 board[row][column] = letterAssigned;
                 checkWin(letterAssigned);
                 if (flag == false && letterAssigned == "O") {
-                    displayWinner(letterAssigned);
+                    displayWinOrTie(letterAssigned);
                 }
                 else if (flag == false && letterAssigned == "X") {
                     board[row][column] = "O";
@@ -148,8 +148,24 @@ function playForWinCondition(letterAssigned) {
         madeMoveFlag = 0;
     }
 }
+function checkCorner() {
+    madeMoveFlag = 0;
+    for (let row = 0; row < 3; row += 2) {
+        for (let column = 0; column < 3; column += 2) {
+            if (board[row][column] == '.') {
+                board[row][column] = letterAssigned;
+                displayTicTacToeBoard();
+                count++;
+                checkWin(letterAssigned);
+                displayWinOrTie(letterAssigned);
+                playerMove();
+            }
+        }
+    }
+}
 let playersPlay = () => {
     while (count < TOTAL_PLAYS) {
+        letterAssigned = "X";
         switch1 = 1;
         let position = readlineSync.question('Enter the position you want to place your letter (1-9)');
         if (position > 0 && position <= TOTAL_PLAYS) {
@@ -159,7 +175,7 @@ let playersPlay = () => {
             if (count > 4) {
                 checkWin(letterAssigned);
             }
-            displayWinner(letterAssigned);
+            displayWinOrTie(letterAssigned);
         }
         else {
             console.log('Invalid Position');
@@ -173,12 +189,14 @@ function computersPlay() {
     playForWinCondition(letterAssigned);
     playForWinCondition("X");
     if (madeMoveFlag == 0) {
+        checkCorner();
+    }
+    if (madeMoveFlag == 0) {
         let pos = Math.floor(Math.random() * 9) + 1;
         changeOneDimentionalPositionToTwoDimentional(pos);
         setLetter(row, column, letterAssigned);
         checkWin(letterAssigned);
     }
-    //displayTicTacToeBoard
 }
 resetBoard();
 checkingPlayerAndAssignedLetterToHim();
