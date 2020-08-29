@@ -1,2 +1,3 @@
 D:\C-Sharp\TypeScript\TicTacToeProblem\TicTacToeProblem\obj\Debug\TicTacToeProblem.njsproj.CoreCompileInputs.cache
 D:\C-Sharp\TypeScript\TicTacToeProblem\TicTacToeProblem\bin\Microsoft.NodejsTools.WebRole.dll
+D:\C-Sharp\TypeScript\TicTacToeProblem\TicTacToeProblem\obj\Debug\TicTacToeProblem.njsprojAssemblyReference.cache
