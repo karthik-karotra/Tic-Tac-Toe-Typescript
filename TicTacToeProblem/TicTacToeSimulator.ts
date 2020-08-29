@@ -13,8 +13,9 @@ const TOTAL_PLAYS = ROWS * COLUMNS;
 var readlineSync = require('readline-sync');
 let row;
 let column;
-let player1;
 let flag: boolean = true;
+let switch1;
+let madeMoveFlag;
 
 let resetBoard = () => {
     for (let i: number = 0; i < ROWS; i++) {
@@ -62,13 +63,16 @@ let setLetter = (row, column, letterAssigned) => {
         board[row][column] = letterAssigned;
         count++;
     }
-    else {
-        console.log('You cant place there Its already occupied');
-        playGame();
+    else if (switch1 == 1) {
+        console.log("You can't place there.It's already occupied");
+        playersPlay();
+    }
+	else {
+        computersPlay();
     }
 }
 
-let checkWin = () => {
+let checkWin = (letterAssigned) => {
     let leftDiagonalCount = 0
     let rightDiagonalCount = 0
     for (let row = 0; row < 3; row++) {
@@ -92,8 +96,13 @@ let checkWin = () => {
             }
         }
     }
+
+}
+
+let displayWinOrTie = (letterAssigned) => {
     if (flag == false) {
         console.log(letterAssigned + ' Wins');
+        displayTicTacToeBoard();
         exit();
     }
     else if (count == TOTAL_PLAYS) {
@@ -106,34 +115,81 @@ let checkWin = () => {
 let playerMove = () => {
     console.log("Player's Turn");
     displayTicTacToeBoard();
-    playGame();
+    playersPlay();
     letterAssigned = "O";
     computerMove();
 }
 
 let computerMove = () => {
     console.log("Computer's turn");
+    computersPlay();
     displayTicTacToeBoard();
-    playGame();
     letterAssigned = "X";
     playerMove();
 }
 
-let playGame = () => {
+function playForWinCondition(letterAssigned) {
+    let block = 0
+    for (let row = 0; row < 3; row++) {
+        for (let column = 0; column < 3; column++) {
+            if (board[row][column] == ".") {
+                board[row][column] = letterAssigned
+                checkWin(letterAssigned)
+                if (flag == false && letterAssigned == "O")
+                {
+                    displayWinOrTie(letterAssigned);
+                }
+                else if (flag == false && letterAssigned == "X") {
+                    board[row][column] = "O"
+                    block = 1
+                    count++;
+                    flag = true;
+                    break;
+                }
+                else {
+                    board[row][column] = "."
+                }
+            }
+        }
+    }
+    if (block == 1) {
+        madeMoveFlag = 1;
+    } else {
+        madeMoveFlag = 0;
+    }
+}
+
+let playersPlay = () => {
     while (count < TOTAL_PLAYS) {
+        switch1= 1
         let position = readlineSync.question('Enter the position you want to place your letter (1-9)');
         if (position > 0 && position <= TOTAL_PLAYS) {
             changeOneDimentionalPositionToTwoDimentional(position);
             setLetter(row, column, letterAssigned);
             displayTicTacToeBoard();
             if (count > 4) {
-                checkWin();
-            }
+                checkWin(letterAssigned);
+
+            } 
+            displayWinOrTie(letterAssigned);
         }
         else {
             console.log('Invalid Position');
+            playersPlay();
         }
         break;
+    }
+}
+
+function computersPlay() {
+    switch1= 0
+    playForWinCondition(letterAssigned);
+    playForWinCondition("X");
+    if (madeMoveFlag == 0) {
+        let pos = Math.floor(Math.random() * 9) + 1
+        changeOneDimentionalPositionToTwoDimentional(pos);
+        setLetter(row, column, letterAssigned)
+        checkWin(letterAssigned);
     }
 }
 
