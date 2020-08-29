@@ -14,6 +14,7 @@ var readlineSync = require('readline-sync');
 let row;
 let column;
 let player1;
+let flag: boolean = true;
 
 let resetBoard = () => {
     for (let i: number = 0; i < ROWS; i++) {
@@ -28,13 +29,15 @@ let checkingPlayerAndAssignedLetterToHim = () => {
     let random = Math.floor(Math.random() * 10) % 2;
     if (random == 1) {
         letterAssigned = "X";
-        player1 = letterAssigned
-        console.log('Player to play first is player1 and letter assigned to him is ' + player1);
+        console.log('Player will play first and letter assigned to him is ' + letterAssigned);
+        console.log('Letter assigned to computer is O');
+        playerMove();
     }
     else {
         letterAssigned = "O";
-        player1 = letterAssigned
-        console.log('Player to play first is player1 and letter assigned to him is ' + player1);
+        console.log('Computer will play first and letter assigned to him is ' + letterAssigned);
+        console.log('Letter assigned to player is X');
+        computerMove();
     }
 }
 
@@ -55,15 +58,13 @@ let changeOneDimentionalPositionToTwoDimentional = (position) => {
 }
 
 let setLetter = (row, column, letterAssigned) => {
-    console.log(row);
-    console.log(column);
-
     if (board[row][column] == '.') {
         board[row][column] = letterAssigned;
         count++;
     }
     else {
         console.log('You cant place there Its already occupied');
+        playGame();
     }
 }
 
@@ -87,11 +88,35 @@ let checkWin = () => {
                 leftDiagonalCount++;
             }
             if (rowCount == 3 || columnCount == 3 || rightDiagonalCount == 3 || leftDiagonalCount == 3) {
-                console.log(player1 + ' Wins');
-                exit();
+                flag = false;
             }
         }
     }
+    if (flag == false) {
+        console.log(letterAssigned + ' Wins');
+        exit();
+    }
+    else if (count == TOTAL_PLAYS) {
+        displayTicTacToeBoard();
+        console.log('Its a Tie');
+        exit();
+    }
+}
+
+let playerMove = () => {
+    console.log("Player's Turn");
+    displayTicTacToeBoard();
+    playGame();
+    letterAssigned = "O";
+    computerMove();
+}
+
+let computerMove = () => {
+    console.log("Computer's turn");
+    displayTicTacToeBoard();
+    playGame();
+    letterAssigned = "X";
+    playerMove();
 }
 
 let playGame = () => {
@@ -101,15 +126,16 @@ let playGame = () => {
             changeOneDimentionalPositionToTwoDimentional(position);
             setLetter(row, column, letterAssigned);
             displayTicTacToeBoard();
-            checkWin();
+            if (count > 4) {
+                checkWin();
+            }
         }
         else {
             console.log('Invalid Position');
         }
+        break;
     }
 }
 
 resetBoard();
 checkingPlayerAndAssignedLetterToHim();
-displayTicTacToeBoard();
-playGame();

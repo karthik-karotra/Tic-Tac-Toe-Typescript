@@ -14,6 +14,7 @@ var readlineSync = require('readline-sync');
 let row;
 let column;
 let player1;
+let flag = true;
 let resetBoard = () => {
     for (let i = 0; i < ROWS; i++) {
         board[i] = [];
@@ -26,13 +27,15 @@ let checkingPlayerAndAssignedLetterToHim = () => {
     let random = Math.floor(Math.random() * 10) % 2;
     if (random == 1) {
         letterAssigned = "X";
-        player1 = letterAssigned;
-        console.log('Player to play first is player1 and letter assigned to him is ' + player1);
+        console.log('Player will play first and letter assigned to him is ' + letterAssigned);
+        console.log('Letter assigned to computer is O');
+        playerMove();
     }
     else {
         letterAssigned = "O";
-        player1 = letterAssigned;
-        console.log('Player to play first is player1 and letter assigned to him is ' + player1);
+        console.log('Computer will play first and letter assigned to him is ' + letterAssigned);
+        console.log('Letter assigned to player is X');
+        computerMove();
     }
 };
 let displayTicTacToeBoard = () => {
@@ -58,55 +61,74 @@ let setLetter = (row, column, letterAssigned) => {
     }
     else {
         console.log('You cant place there Its already occupied');
+        playGame();
     }
 };
-let checkWinner = () => {
-    //sign = $1
-    let leftDiagonal = 0;
-    let rightDiagonal = 0;
+let checkWin = () => {
+    let leftDiagonalCount = 0;
+    let rightDiagonalCount = 0;
     for (let row = 0; row < 3; row++) {
         let rowCount = 0;
         let columnCount = 0;
         for (let column = 0; column < 3; column++) {
-            // row check
             if (board[row][column] == letterAssigned) {
                 rowCount++;
             }
-            //col check
             if (board[column][row] == letterAssigned) {
                 columnCount++;
             }
-            //rightDiagonal
             if (row == column && board[row][column] == letterAssigned) {
-                rightDiagonal++;
+                rightDiagonalCount++;
             }
-            //left Diagonal
             if ((row + column) == 2 && board[row][column] == letterAssigned) {
-                leftDiagonal++;
+                leftDiagonalCount++;
             }
-            if (rowCount == 3 || columnCount == 3 || rightDiagonal == 3 || leftDiagonal == 3) {
-                console.log(player1 + ' Wins');
-                process_1.exit();
+            if (rowCount == 3 || columnCount == 3 || rightDiagonalCount == 3 || leftDiagonalCount == 3) {
+                flag = false;
             }
         }
     }
+    if (flag == false) {
+        console.log(letterAssigned + ' Wins');
+        process_1.exit();
+    }
+    else if (count == TOTAL_PLAYS) {
+        displayTicTacToeBoard();
+        console.log('Its a Tie');
+        process_1.exit();
+    }
 };
-function playGame() {
+let playerMove = () => {
+    console.log("Player's Turn");
+    displayTicTacToeBoard();
+    playGame();
+    letterAssigned = "O";
+    computerMove();
+};
+let computerMove = () => {
+    console.log("Computer's turn");
+    displayTicTacToeBoard();
+    playGame();
+    letterAssigned = "X";
+    playerMove();
+};
+let playGame = () => {
     while (count < TOTAL_PLAYS) {
         let position = readlineSync.question('Enter the position you want to place your letter (1-9)');
         if (position > 0 && position <= TOTAL_PLAYS) {
             changeOneDimentionalPositionToTwoDimentional(position);
             setLetter(row, column, letterAssigned);
             displayTicTacToeBoard();
-            checkWinner();
+            if (count > 4) {
+                checkWin();
+            }
         }
         else {
             console.log('Invalid Position');
         }
+        break;
     }
-}
+};
 resetBoard();
 checkingPlayerAndAssignedLetterToHim();
-displayTicTacToeBoard();
-playGame();
 //# sourceMappingURL=TicTacToeSimulator.js.map
