@@ -1,3 +1,5 @@
+import { exit } from "process";
+
 console.log('============================================');
 console.log('Welcome To Tic Tac Toe Simulator!!!!!!');
 console.log('============================================');
@@ -11,6 +13,7 @@ const TOTAL_PLAYS = ROWS * COLUMNS;
 var readlineSync = require('readline-sync');
 let row;
 let column;
+let player1;
 
 let resetBoard = () => {
     for (let i: number = 0; i < ROWS; i++) {
@@ -25,12 +28,12 @@ let checkingPlayerAndAssignedLetterToHim = () => {
     let random = Math.floor(Math.random() * 10) % 2;
     if (random == 1) {
         letterAssigned = "X";
-        let player1 = letterAssigned
+        player1 = letterAssigned
         console.log('Player to play first is player1 and letter assigned to him is ' + player1);
     }
     else {
         letterAssigned = "O";
-        let player1 = letterAssigned
+        player1 = letterAssigned
         console.log('Player to play first is player1 and letter assigned to him is ' + player1);
     }
 }
@@ -64,13 +67,41 @@ let setLetter = (row, column, letterAssigned) => {
     }
 }
 
-function playGame() {
+let checkWin = () => {
+    let leftDiagonalCount = 0
+    let rightDiagonalCount = 0
+    for (let row = 0; row < 3; row++) {
+        let rowCount = 0
+        let columnCount = 0
+        for (let column = 0; column < 3; column++) {
+            if (board[row][column] == letterAssigned) {
+                rowCount++;
+            }
+            if (board[column][row] == letterAssigned) {
+                columnCount++;
+            }
+            if (row == column && board[row][column] == letterAssigned) {
+                rightDiagonalCount++;
+            }
+            if ((row + column) == 2 && board[row][column] == letterAssigned) {
+                leftDiagonalCount++;
+            }
+            if (rowCount == 3 || columnCount == 3 || rightDiagonalCount == 3 || leftDiagonalCount == 3) {
+                console.log(player1 + ' Wins');
+                exit();
+            }
+        }
+    }
+}
+
+let playGame = () => {
     while (count < TOTAL_PLAYS) {
         let position = readlineSync.question('Enter the position you want to place your letter (1-9)');
         if (position > 0 && position <= TOTAL_PLAYS) {
             changeOneDimentionalPositionToTwoDimentional(position);
             setLetter(row, column, letterAssigned);
             displayTicTacToeBoard();
+            checkWin();
         }
         else {
             console.log('Invalid Position');
