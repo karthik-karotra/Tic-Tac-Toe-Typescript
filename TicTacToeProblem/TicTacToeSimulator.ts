@@ -16,11 +16,19 @@ let resetBoard = () => {
     }
 }
 
-let assigningLetterToPlayer = () => {
+let checkingPlayerAndAssignedLetterToHim = () => {
     let random = Math.floor(Math.random() * 10) % 2;
-    random === 1 ? letterAssigned = "X" : letterAssigned = "O";
+    if (random == 1) {
+        letterAssigned = "X";
+        let player1 = letterAssigned
+        console.log('Player to play first is player1 and letter assigned to him is ' + player1);
+    }
+	else {
+        letterAssigned = "O";
+        let player1 = letterAssigned
+        console.log('Player to play first is player1 and letter assigned to him is ' + player1);
+    }
 }
 
 resetBoard();
-assigningLetterToPlayer();
-console.log('Letter assigned is ' + letterAssigned);
+checkingPlayerAndAssignedLetterToHim();
